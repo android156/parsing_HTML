@@ -20,16 +20,17 @@ def get_page(url, params, page=0):
     return data
 
 
-# Считываем первые 2000 вакансий
+# Нашли путь, где вакансии расположены, поддерживается пагинациz, можно менять параметр page
 page = 1
 url_sj = 'https://www.superjob.ru/vacancy/search/'
 
 params_sj = {
     'User-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0',
     'geo[t][0]': 4,  # Поиск ощуществляется по вакансиям города Москва
-    'page': page,  # Индекс страницы поиска на SJ
+    'page': page,  # страница при пагинации SJ
     }
 
+# В комментариях почему-то была ссылка на API с HH. С API доставать мы уже умеем.
 url_hh = 'https://api.hh.ru/vacancies'
 params_hh = {
         'text': 'NAME:Аналитик',  # Текст фильтра. В имени должно быть слово "Аналитик"
@@ -39,10 +40,9 @@ params_hh = {
     }
 
 req = get(url_sj, params_sj).text
-soup = bs(req)
-
-# a_tags = req.so
-print(soup)
+soup = bs(req, features="lxml")
+a_tags = soup.find_all('a')
+print(a_tags)
 jsObj = json.loads(get_page(url_hh, params_hh))
 print(jsObj)
 
