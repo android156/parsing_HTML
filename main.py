@@ -41,9 +41,9 @@ params_hh = {
 
 req = get(url_sj, params_sj).text
 soup = bs(req, features="lxml")
-a_tags = soup.find_all('a')
-print(a_tags)
-jsObj = json.loads(get_page(url_hh, params_hh))
-print(jsObj)
+div_vacancy_cards = soup.find_all('div', attrs={'class': "f-test-search-result-item"})
+print([vacancy_card.contents for vacancy_card in div_vacancy_cards])
+# jsObj = json.loads(get_page(url_hh, params_hh))
+# print(jsObj)
 
 
