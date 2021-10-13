@@ -3,6 +3,7 @@ import json
 from os import listdir
 from time import sleep
 from bs4 import BeautifulSoup as bs
+import re
 
 def print_dictionary_values(dict):
     for key in dict:
@@ -41,9 +42,16 @@ params_hh = {
 
 req = get(url_sj, params_sj).text
 soup = bs(req, features="lxml")
-div_vacancy_cards = soup.find_all('div', attrs={'class': "f-test-search-result-item"})
-print([vacancy_card.contents for vacancy_card in div_vacancy_cards])
+div_vacancy_cards = soup.find_all(['div', 'a', ], attrs={'class': "f-test-search-result-item"})
+# div_vacancy_cards = soup.find_all(re.compile("^f-test-link"))
+
+for vacancy_card in div_vacancy_cards:
+    vacancy = vacancy_card.find(re.compile("f-test-link-"))
+    print(vacancy_card)
+    print(vacancy)
 # jsObj = json.loads(get_page(url_hh, params_hh))
 # print(jsObj)
 
-
+# soup.find_all(lambda tag: len(tag.name) == 1 and not tag.attrs)
+# soup.find_all(lambda tag: len(tag.attrs) == 2)
+# f-test-link
