@@ -4,6 +4,8 @@ from os import listdir
 from time import sleep
 from bs4 import BeautifulSoup as bs
 import re
+from pymongo import MongoClient
+
 
 def print_dictionary_values(dict):
     for key in dict:
@@ -31,6 +33,10 @@ def is_substring_in_strings_list(substring, list_of_strings):
             return True
     return False
 
+
+client = MongoClient('localhost', 27017)
+db = client['vacancy_db']
+collection = db.vacancies
 
 
 # Нашли путь, где вакансии расположены, поддерживается пагинациz, можно менять параметр page
