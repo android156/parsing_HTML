@@ -88,6 +88,7 @@ for tag in tags_a:
 
 # Возвращаемся к выдаче блоков div с кучей всякого мусора. Но важно, что в таком блоке только все вокруг одной
 # вакансии. Попробуем расковырять такой блок
+vacancy = {}
 print('_' * 100)
 print(f'Тэги "div", которые содержат атрибут "class"="f-test-search-result-item":')
 vacancy_div_cards = soup.find_all('div', attrs={'f-test-search-result-item'})
@@ -97,15 +98,16 @@ vacancy_counter = 1
 max_vacancies_to_show = 10  # Ограничитель
 for vacancy_card in vacancy_div_cards:
     a_tags = vacancy_card.find(name='a')
-    print(type(a_tags))
-    if a_tags is not None and a_tags.text:
-        print(f'Div №{vacancy_counter} - {type(vacancy_card)}\n{vacancy_card}')
-        print(f'Вакансия - {a_tags.text}')
+    span_tags = vacancy_card.find_all('span', attrs={'f-test-text-company-item-salary'})
+    if a_tags is not None and a_tags.string:
+        print(f'Div №{vacancy_counter}\n{vacancy_card}')
+        print(f'Вакансия - {a_tags.string}')
+        print(f'Зарплата - {span_tags}')
         vacancy_card_tag_counter = 1
-        for tag in vacancy_card:
-            print(f'Таг №{vacancy_card_tag_counter} - {tag.name} - {tag}')
-            vacancy_card_tag_counter += 1
-        print(f'Всего тэгов {vacancy_card_tag_counter-1}\n')
+        # for tag in span_tags:
+        #     print(f'Таг №{vacancy_card_tag_counter} - {tag.name} - {tag}')
+        #     vacancy_card_tag_counter += 1
+        # print(f'Всего тэгов {vacancy_card_tag_counter-1}\n')
 
 
 
