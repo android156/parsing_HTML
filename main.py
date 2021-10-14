@@ -21,6 +21,18 @@ def get_page(url, params, page=0):
     return data
 
 
+def get_soup(html):
+    return bs(html, features="lxml")
+
+
+def is_substring_in_strings_list(substring, list_of_strings):
+    for string in list_of_strings:
+        if substring in string:
+            return True
+    return False
+
+
+
 # Нашли путь, где вакансии расположены, поддерживается пагинациz, можно менять параметр page
 page = 1
 url_sj = 'https://www.superjob.ru/vacancy/search/'
@@ -42,13 +54,40 @@ params_hh = {
 
 req = get(url_sj, params_sj).text
 soup = bs(req, features="lxml")
-div_vacancy_cards = soup.find_all(['div', 'a', ], attrs={'class': "f-test-search-result-item"})
-# div_vacancy_cards = soup.find_all(re.compile("^f-test-link"))
 
-for vacancy_card in div_vacancy_cards:
-    vacancy = vacancy_card.find(re.compile("f-test-link-"))
-    print(vacancy_card)
-    print(vacancy)
+vacancy_div_cards = soup.find_all('div', attrs={'f-test-search-result-item'})
+tags_a = soup.find_all(['a'])
+tags_attrs = [tag.attrs for tag in tags_a]
+
+print(f'Тэги, которые содержат в атрибуте "class" подстроку "f-test-link-":')
+counter = 1
+for tag in tags_a:
+    if is_substring_in_strings_list('f-test-link-', tag.attrs['class']):
+        print(f'{counter}. Тэг: "{tag.name}" Содержимое:\n{tag.contents}')
+        counter += 1
+        if tag.string:
+            print(f'Текстовое поле: {tag.string}')
+        print(f'Все его атрибуты:\n{tag.attrs}')
+
+counter = 1
+for tag in tags_a:
+    if 'icMQ_' in tag.attrs['class'] and \
+            is_substring_in_strings_list('f-test-link-', tag.attrs['class']) and \
+            '/vakansii/' in tag.attrs['href'] and tag.string and tag.string != 'Каталог профессий':
+        print(f'{counter}. {tag.string}')
+        counter += 1
+
+
+
+# # div_vacancy_cards = soup.find_all(re.compile("^f-test-link"))
+# print(vacancy_links)
+# for vacancy_link in vacancy_links:
+#     # vacancy = vacancy_card.find('f-test-link')
+#     print(vacancy_link)
+#     # print(f'vacancy - {vacancy}')
+#     # print(divs)
+
+# print(divs.contents)
 # jsObj = json.loads(get_page(url_hh, params_hh))
 # print(jsObj)
 
